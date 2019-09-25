@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Image, ActivityIndicator } from 'react-native';
 
 import { Card } from 'native-base';
-import { Entype } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 import * as firebase from 'firebase';
 
@@ -23,10 +23,38 @@ export default class HomeScreen extends React.Component{
 
     getAllContact = () => {
         let self = this;
-
         // Get all contact from firebase
+        let contactRef = firebase.database().ref();
+        contactRef.on("value", dataSnapshot => {
+            if(dataSnapshot.val()){
+                let contactResult = Object.values(dataSnapshot.val());
+                let contactKey = Object.keys(dataSnapshot.val());
+                contactKey.forEach((value, key) => {
+                    contactResult[key]["key"] = value;
+                });
 
-        // Sort array by fname and set it to data state
+                // Sort array by fname and set it to data state
+                self.setState({
+                    data: contactResult.sort((a,b)=> {
+                        var nameA = a.fname.toUpperCase();
+                        var nameB = b.fname.toUpperCase();
+        
+                        if(nameA < nameB){
+                            return -1;
+                        }
+                        if(nameA > nameB){
+                            return 1;
+                        }
+                        return 0;
+        
+                    }),
+                    isListEmpty: false,
+                })
+            } else {
+                self.setState({isListEmpty: true})
+            }
+            self.setState({isLoading: false});
+        })        
     }
 
     render(){

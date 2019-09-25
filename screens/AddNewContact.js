@@ -4,8 +4,8 @@ import { StyleSheet, Text, View, TouchableOpacity, TouchableWithoutFeedback, Key
 import uuid from 'uuid';
 
 import { Form, Item, Input, Label, Button } from 'native-base';
-import { ImagePicker} from "expo";
-import { Header } from 'react-navigation';
+import * as ImagePicker from "expo-image-picker";
+import { Header } from 'react-navigation-stack';
 
 import * as firebase from 'firebase';
 
@@ -22,11 +22,46 @@ export default class AddNewContact extends React.Component{
         address: "",
         image: "empty",
         imageDownloadUrl: "empty",
-        isUploading: true,
+        isUploading: false,
     };
 
     // Save Contact method. Create & Save Contact
-    saveContact = () => { };
+    saveContact = async() => { 
+        if(
+            this.state.fname !== "" &&
+            this.state.lname !== "" &&
+            this.state.phone !== "" &&
+            this.state.email !== "" &&
+            this.state.address !== "" 
+        ){
+            this.setState({isUploading: true});
+
+            const dbReference = firebase.database().ref();
+            const storageRef = firebase.storage().ref() ;
+
+            if (this.state.image !== ""){
+                const downloadUrl = await this.uploadImageAsync(this.state.image, storageRef);
+                this.setState({imageDownloadUrl: downloadUrl});
+            }
+
+            // Now save all Vals
+
+            var contact ={
+                fname: this.state.fname,
+                lname: this.state.lname,
+                phone: this.state.phone,
+                email: this.state.email,
+                address: this.state.address,
+                imageUrl : this.state.imageUrl
+            }
+
+            await dbReference.push(contact, error => {
+                if(!error){
+                    return this.props.navigation.goBack();
+                }
+            });
+        }
+    };
 
     // Pick image from gallery
     pickImage = async() => {
@@ -35,11 +70,41 @@ export default class AddNewContact extends React.Component{
             base64: true,
             allowsEditing: true,
             aspect: [1,1],
-        })
+        });
+        if(!result.cancelled){
+            this.setState({image: result.uri});
+        }
      };
 
     // Upload image to firebase
-    uploadImageAsync = (uri, storageRef) => {};
+    uploadImageAsync = async(uri, storageRef) => {
+        const parts = uri.split(".");
+        const fileExtension = parts[parts.length-1];
+
+        // create blob
+        const blob = await new Promise( (resolve, reject) => {
+            // Xml Http Request
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                resolve(xhr.response);
+            };
+            xhr.onerror = function(e){
+                console.log(e);
+                reject(new TypeError("Network request failed"));
+            };
+            xhr.responseType = "blob";
+            xhr.open("GET", uri, true);
+            xhr.send(null);
+        });
+
+        // Uploading the Image
+        const ref = storageRef
+            .child("ContactImages")
+            .child(uuid.v4() + "." + fileExtension);
+        const snapshot = await ref.put(blob);
+        blob.close();
+        return await snapshot.ref.getDownloadURL();
+    };
 
     render(){
         if(this.state.isUploading){
