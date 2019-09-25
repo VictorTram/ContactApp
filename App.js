@@ -1,19 +1,38 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
-}
+import HomeScreen from './screens/HomeScreen';
+import AddNewContact from './screens/AddNewContact';
+import ViewContact from './screens/ViewContact';
+import EditContact from './screens/EditContact';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+import * as firebase from 'firebase';
+
+import {SECRET_firebaseConfig} from './config';
+
+const MainNavigator = createStackNavigator(
+  {
+    Home: { screen: HomeScreen},
+    Add: { screen: AddNewContact},
+    View: { screen: ViewContact},
+    Edit: { screen: EditContact},
   },
-});
+  {
+    defaultNavigationOptions: {
+      headerTintColor:"#fff",
+      headerStyle: {
+        backgroundColor: "#74B9FF"
+      },
+      headerTitleStyle: {
+        color: "#fff"
+      }
+    }
+  }
+);
+
+const App = createAppContainer(MainNavigator);
+firebase.initializeApp(SECRET_firebaseConfig);
+
+export default App;
