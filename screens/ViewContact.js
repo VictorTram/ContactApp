@@ -19,7 +19,7 @@ export default class ViewContact extends React.Component{
         phone: null,
         email: null,
         address: null,
-        imageUrl: null,
+        image: null,
         key: null,
         isLoading: true,
     };
@@ -42,7 +42,7 @@ export default class ViewContact extends React.Component{
                     phone: contactValue.phone,
                     email: contactValue.email,
                     address: contactValue.address,
-                    image: contactValue.imageUrl,
+                    image: contactValue.image,
                     key: key,
                     isLoading: false
 
@@ -103,7 +103,7 @@ export default class ViewContact extends React.Component{
                         let contactRef = firebase.database().ref().child(key);
                         await contactRef.remove( (error) => {
                             if(!error){
-                                this.props.navigation.navigate.goBack();
+                                this.props.navigation.goBack();
                             } else{
                                 console.log(error);
                             }
@@ -140,9 +140,9 @@ export default class ViewContact extends React.Component{
                     <Image
                     style={styles.contactIcon}
                     source={ 
-                        this.state.imageUrl === "empty" 
+                        this.state.image === "empty" 
                         ? require("../assets/person.png")
-                        : {uri: this.state.imageUrl}}
+                        : {uri: this.state.image}}
                     />
                     <View style={styles.nameContainer}>
                         <Text style={styles.name}>
@@ -182,7 +182,7 @@ export default class ViewContact extends React.Component{
                                     this.smsAction(this.state.phone);
                                 }}
                                 >
-                                    <Entypo name="message" size={50} color="74B9FF"/>
+                                    <Entypo name="message" size={50} color="#74B9FF"/>
                                 </TouchableOpacity>
                             </CardItem>
                         </Card>
@@ -193,7 +193,7 @@ export default class ViewContact extends React.Component{
                                     this.callAction(this.state.phone);
                                 }}
                                 >
-                                    <Entypo name="phone" size={50} color="74B9FF"/>
+                                    <Entypo name="phone" size={50} color="#74B9FF"/>
                                 </TouchableOpacity>
                             </CardItem>
                         </Card>
@@ -204,7 +204,7 @@ export default class ViewContact extends React.Component{
                                     this.editContact(this.state.key);
                                 }}
                                 >
-                                    <Entypo name="edit" size={50} color="74B9FF"/>
+                                    <Entypo name="edit" size={50} color="#74B9FF"/>
                                     <Text style={styles.actionText}Edit></Text>
                                 </TouchableOpacity>
                             </CardItem>
@@ -216,7 +216,7 @@ export default class ViewContact extends React.Component{
                                     this.deleteContact(this.state.key);
                                 }}
                                 >
-                                    <Entypo name="trash" size={50} color="74B9FF"/>
+                                    <Entypo name="trash" size={50} color="#74B9FF"/>
                                 </TouchableOpacity>
                             </CardItem>
                         </Card>

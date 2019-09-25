@@ -106,6 +106,7 @@ export default class HomeScreen extends React.Component{
               return (
                 <TouchableOpacity
                 onPress = {() => {
+                    // This sends the key over as a parameter for View
                     this.props.navigation.navigate("View", {
                         key: item.key
                     });
@@ -116,9 +117,9 @@ export default class HomeScreen extends React.Component{
                             <Image
                             style={styles.contactIcon}
                             source={
-                                item.imageUrl === "empty"
+                                item.image === "empty"
                                 ? require("../assets/person.png")
-                                : {uri: item.imageURL}
+                                : {uri: item.image}
                             }
                             />
                         </View>
@@ -133,8 +134,9 @@ export default class HomeScreen extends React.Component{
                     </Card>
                 </TouchableOpacity>
               );
-          }}      
-          />
+            }}  >
+            </FlatList>    
+          
 
           <TouchableOpacity
           style={styles.floatButton}
@@ -157,8 +159,6 @@ export default class HomeScreen extends React.Component{
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     listItem: {
         flexDirection: "row",

@@ -52,8 +52,8 @@ export default class AddNewContact extends React.Component{
                 phone: this.state.phone,
                 email: this.state.email,
                 address: this.state.address,
-                imageUrl : this.state.imageUrl
-            }
+                image: this.state.image
+            };
 
             await dbReference.push(contact, error => {
                 if(!error){
@@ -81,7 +81,7 @@ export default class AddNewContact extends React.Component{
         const parts = uri.split(".");
         const fileExtension = parts[parts.length-1];
 
-        // create blob
+        // Create blob
         const blob = await new Promise( (resolve, reject) => {
             // Xml Http Request
             const xhr = new XMLHttpRequest();
@@ -89,6 +89,7 @@ export default class AddNewContact extends React.Component{
                 resolve(xhr.response);
             };
             xhr.onerror = function(e){
+                console.log("xhr.onerror : XHR fail");
                 console.log(e);
                 reject(new TypeError("Network request failed"));
             };
@@ -102,6 +103,8 @@ export default class AddNewContact extends React.Component{
             .child("ContactImages")
             .child(uuid.v4() + "." + fileExtension);
         const snapshot = await ref.put(blob);
+
+        // Close the blob
         blob.close();
         return await snapshot.ref.getDownloadURL();
     };
