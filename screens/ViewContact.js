@@ -185,8 +185,7 @@ export default class ViewContact extends React.Component{
                                     <Entypo name="message" size={50} color="#74B9FF"/>
                                 </TouchableOpacity>
                             </CardItem>
-                        </Card>
-                        <Card style={styles.actionContainer}>
+                        
                             <CardItem style={styles.actionButton} bordered>
                                 <TouchableOpacity
                                 onPress={()=>{
@@ -208,8 +207,7 @@ export default class ViewContact extends React.Component{
                                     <Text style={styles.actionText}Edit></Text>
                                 </TouchableOpacity>
                             </CardItem>
-                        </Card>
-                        <Card style={styles.actionContainer}>
+                        
                             <CardItem style={styles.actionButton} bordered>
                                 <TouchableOpacity
                                 onPress={()=>{
